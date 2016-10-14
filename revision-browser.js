@@ -6,6 +6,7 @@ jQuery( document ).ready( function($){
 
    var revisions, revision, count;
    var current = 0;
+
    $.get( REVBROWSER.api ).success( function( r ){
       revisions = r;
       count = r.length;
@@ -16,20 +17,17 @@ jQuery( document ).ready( function($){
    });
 
    $( '#revision-browser-next' ).on( 'click', function(e){
-
-         e.preventDefault();
-         if( current < count ){
-            revision = revisions[ current ];
-
-            placeRevision( revision );
-            current = current + 1;
-         }
-
+      e.preventDefault();
+      current = current - 1;
+      if( current > -1 ){
+         revision = revisions[ current ];
+         placeRevision( revision );
+      }
    });
 
    $( '#revision-browser-prev' ).on( 'click', function(e){
       e.preventDefault();
-      current = current - 1;
+      current = current + 1;
       if( current < count ){
          revision = revisions[ current ];
          placeRevision( revision );
@@ -38,10 +36,11 @@ jQuery( document ).ready( function($){
    });
 
    function placeRevision( revision ){
+    console.log( revision )
       $title.html( revision.title.rendered );
       $content.html( revision.content.rendered );
-      $('html, body').animate({
-         scrollTop: $nav.offset() - 50 .top
-      }, 500);
+      // $('html, body').animate({
+      //    scrollTop: $nav.offset() - 50 .top
+      // }, 500);
    }
 });
