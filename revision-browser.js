@@ -36,11 +36,11 @@ jQuery( document ).ready( function($) {
       }
 
       if ( 0 == current ) {
-         $( '#revision-browser-next' ).html( REVBROWSER.latest );
+         $( '#revision-browser-next' ).html( REVBROWSER.strings.latest );
       }
 
       if ( ( count -1 ) != current ) {
-         $( '#revision-browser-prev' ).html( '← ' + REVBROWSER.previous );
+         $( '#revision-browser-prev' ).html( '← ' + REVBROWSER.strings.previous );
       }
 
       if ( current > -1 ) {
@@ -58,11 +58,11 @@ jQuery( document ).ready( function($) {
       }
 
       if ( ( count -1 ) == current ) {
-         $( '#revision-browser-prev' ).html( REVBROWSER.oldest );
+         $( '#revision-browser-prev' ).html( REVBROWSER.strings.oldest );
       }
 
       if ( -1 != current ) {
-         $( '#revision-browser-next' ).html( REVBROWSER.next + ' →' );
+         $( '#revision-browser-next' ).html( REVBROWSER.strings.next + ' →' );
       }
 
       if ( current < count ) {
