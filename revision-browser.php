@@ -19,7 +19,7 @@ add_action( 'wp_enqueue_scripts', 'revisions_browser' );
  *
  * @since  0.1.0
  */
-function revisions_browser(){
+function revisions_browser() {
 	// Dont' show to non editors.
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
@@ -38,7 +38,36 @@ function revisions_browser(){
 	) );
 
 	// This is bad UI I know. Pull requests welcome.
-	$links = sprintf( '<p style="color:#fff;background-color:#000;" id="revision-browser-nav">%s <a href="#" id="revision-browser-next">%s</a> <a href="#" id="revision-browser-prev">%s</a>', esc_html__( 'Revisions' ), esc_html__( 'Next' ), esc_html__( 'Previous' ) );
+	$links = sprintf( '
+		<style>
+			#revision-browser-nav {
+				padding:2rem;
+				margin:1rem 0;
+				color:#fff;
+				background-color:#000;
+				text-align:center;
+			}
+			#revision-browser-heading {
+				font-size: 3rem;
+				margin: 0 0 1.5rem;
+			}
+			#revision-browser-heading > span {
+				color:goldenrod;
+			}
+			#revision-browser-nav a {
+				color:goldenrod;
+				margin:3rem;
+			}
+		</style>
+
+		<div id="revision-browser-nav">
+			<h3 id="revision-browser-heading">%s <span></span></h3>
+			<div>
+				<a href="#" id="revision-browser-prev">%s</a>
+				<a href="#" id="revision-browser-next">%s</a>
+			</div>
+		</div>',
+		esc_html__( 'REVISIONS: ' ), esc_html__( '← PREVIOUS' ), esc_html__( 'LATEST REVISION!' ) );
 
 	global  $post;
 	if ( ! is_object( $post ) ) {
