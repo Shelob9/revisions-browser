@@ -36,11 +36,11 @@ jQuery( document ).ready( function($) {
       }
 
       if ( 0 == current ) {
-         $( '#revision-browser-next' ).html( 'LATEST REVISION!' );
+         $( '#revision-browser-next' ).html( REVBROWSER.latest );
       }
 
       if ( ( count -1 ) != current ) {
-         $( '#revision-browser-prev' ).html( '← PREVIOUS' );
+         $( '#revision-browser-prev' ).html( '← ' + REVBROWSER.previous );
       }
 
       if ( current > -1 ) {
@@ -58,11 +58,11 @@ jQuery( document ).ready( function($) {
       }
 
       if ( ( count -1 ) == current ) {
-         $( '#revision-browser-prev' ).html( 'OLDEST RESVISION!' );
+         $( '#revision-browser-prev' ).html( REVBROWSER.oldest );
       }
 
       if ( -1 != current ) {
-         $( '#revision-browser-next' ).html( 'NEXT →' );
+         $( '#revision-browser-next' ).html( REVBROWSER.next + ' →' );
       }
 
       if ( current < count ) {

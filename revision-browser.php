@@ -87,6 +87,12 @@ function revisions_browser() {
 		'content' => $selectors[ 'content' ],
 		'title'   => $selectors[ 'title' ],
 		'links'   => $links,
+		'strings' => array(
+			'oldest' => esc_html__( 'Oldest Revision' ),
+			'latest' => esc_html__( 'Latest Revision' ),
+			'previous' => esc_html__( 'Previous' ),
+			'next' => esc_html__( 'Next' ),
+		)
 	]);
 };
 
