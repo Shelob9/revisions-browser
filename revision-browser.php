@@ -20,7 +20,7 @@ add_action( 'wp_enqueue_scripts', 'revisions_browser' );
  * @since  0.1.0
  */
 function revisions_browser() {
-	// Dont' show to non editors.
+	// Don't show to non editors.
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
 	}
@@ -30,70 +30,63 @@ function revisions_browser() {
 		return;
 	}
 
-	wp_enqueue_script( 'revision-browser', plugin_dir_url(__FILE__) . '/revision-browser.js', [ 'jquery' ] );
+	add_action( 'admin_bar_menu', 'revisions_browser_toolbar', 999 );
+
+	wp_enqueue_script( 'revision-browser', plugin_dir_url(__FILE__) . '/revision-browser.js', array( 'jquery', 'wp-api' ) );
 
 	$selectors = wp_parse_args( get_theme_support( 'revision-browser-selectors' ), array(
 		'content' => 'entry-content',
 		'title'   => 'entry-title',
 	) );
 
-	// This is bad UI I know. Pull requests welcome.
-	$links = sprintf( '
-		<style>
-			#revision-browser-nav {
-				padding:2rem;
-				margin:1rem 0;
-				color:#fff;
-				background-color:#000;
-				text-align:center;
-			}
-			#revision-browser-heading {
-				font-size: 3rem;
-				margin: 0 0 1.5rem;
-			}
-			#revision-browser-heading > span {
-				color:goldenrod;
-			}
-			#revision-browser-nav a {
-				color:goldenrod;
-				margin:3rem;
-			}
-		</style>
-
-		<div id="revision-browser-nav">
-			<h3 id="revision-browser-heading">%s <span></span></h3>
-			<div>
-				<a href="#" id="revision-browser-prev">%s</a>
-				<a href="#" id="revision-browser-next">%s</a>
-			</div>
-		</div>',
-		esc_html__( 'REVISIONS: ' ), esc_html__( '← PREVIOUS' ), esc_html__( 'LATEST REVISION!' ) );
-
 	global  $post;
 	if ( ! is_object( $post ) ) {
 		return;
 	}
 
-	// Building the URL.
-	$api = add_query_arg( array(
-		'_wpnonce' => wp_create_nonce( 'wp_rest' ),
-		'context'  => 'view'
-	), rest_url( sprintf( 'wp/v2/posts/%d/revisions', $post->ID ) )  );
-
 	// REVBROWSER object.
 	wp_localize_script( 'revision-browser', 'REVBROWSER', [
-		'api'     => esc_url( $api ),
-		'nonce'   => wp_create_nonce( 'wp_rest' ),
+		'post'    => absint( $post->ID ),
 		'content' => $selectors[ 'content' ],
 		'title'   => $selectors[ 'title' ],
-		'links'   => $links,
-		'strings' => array(
-			'oldest' => esc_html__( 'Oldest Revision' ),
-			'latest' => esc_html__( 'Latest Revision' ),
-			'previous' => esc_html__( 'Previous' ),
-			'next' => esc_html__( 'Next' ),
-		)
+		'none' => esc_html__( 'No Revisions')
+
 	]);
 };
 
+/**
+ * Add revision browser to toolbar
+ *
+ * @since 0.1.0
+ *
+ * @param WP_Admin_Bar $wp_admin_bar
+ */
+function revisions_browser_toolbar(  $wp_admin_bar ) {
+	$parent = 'revisions-browser';
+	$meta = array( 'class' => 'revisions-browser' );
+	$args = array(
+		'id'    => $parent,
+		'title' => __( 'Browse Revisions' ),
+		'href'  => '#revisions',
+		'meta'  => $meta
+	);
 
+	$wp_admin_bar->add_node( $args );
+
+	$wp_admin_bar->add_node( array(
+		'parent' => $parent,
+		'id' => $parent . '-previous',
+		'title' => __( 'Previous' ),
+		'href' => '#previous-revision',
+		'meta' => $meta,
+	) );
+
+	$wp_admin_bar->add_node( array(
+		'parent' => $parent,
+		'id' => $parent . '-next',
+		'title' => __( 'Next' ),
+		'href' => '#next-revision',
+		'meta' => $meta,
+	) );
+
+}

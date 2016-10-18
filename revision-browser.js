@@ -6,79 +6,110 @@
  * @since   0.1.0
  * @package RBR
  */
-jQuery( document ).ready( function($) {
-   var $content = $( '.' + REVBROWSER.content );
-   var $title   = $( '.' + REVBROWSER.title );
-   var $nav     = $( '#revision-browser-nav' );
+jQuery(document).ready(function ($) {
+    var $previous = $('#wp-admin-bar-revisions-browser-previous a');
+    var $next = $('#wp-admin-bar-revisions-browser-next a');
+    $previous.hide().css('visibility', 'hidden').attr('aria-hidden', true);
+    $next.hide().css('visibility', 'hidden').attr('aria-hidden', true);
 
-   $content.parent().prepend( REVBROWSER.links );
+    wp.api.loadPromise.done(function () {
+        var loaded = false;
+        var revision;
 
-   var revisions, revision, count;
-   var current = 0;
+        $('.revisions-browser').on('click hover mouseover', function (e) {
+            e.preventDefault();
+            initRevisions();
+        });
 
-   $.get( REVBROWSER.api ).success( function( r ) {
-      revisions = r;
-      count = r.length;
-      
-      // Set the total revisions.
-      $('#revision-browser-heading > span').html( count );
-   }).error( function( r ) {
-      $nav.hide().css( 'visibility', 'hidden' ).attr( 'aria-hidden', true );
-      
-   });
+        //load revisions and set up system, but only once.
+        function initRevisions() {
+            var $menu = $('#wp-admin-bar-revisions-browser');
+            if (false === loaded) {
+                var revisions = new wp.api.collections.PostRevisions({}, {parent: REVBROWSER.post });
+                var post = new wp.api.models.Post({id: REVBROWSER.post });
+                $.when(revisions.fetch(), post.fetch()).then(function (d1, d2) {
+                    if ('object' == typeof  d1 && 0 < d1[0].length) {
 
-   // NEXT.
-   $( '#revision-browser-next' ).on( 'click', function(e) {
-      e.preventDefault();
-     
-      if ( 0 != current ) {
-         current = current - 1;
-      }
+                        revisions = d1[0].reverse();
+                        var count = d1[0].length;
+                        var current = count;
 
-      if ( 0 == current ) {
-         $( '#revision-browser-next' ).html( REVBROWSER.strings.latest );
-      }
+                        revisions[current] = d2[0];
+                        var $content = $('.' + REVBROWSER.content);
+                        var $title = $('.' + REVBROWSER.title);
 
-      if ( ( count -1 ) != current ) {
-         $( '#revision-browser-prev' ).html( '← ' + REVBROWSER.strings.previous );
-      }
+                        updateNav();
 
-      if ( current > -1 ) {
-         revision = revisions[ current ];
-         placeRevision( revision );
-      }
-   });
+                        $previous.on('click', function (e) {
+                            e.preventDefault();
+                            if (hasPrevious()) {
+                                current = current - 1;
+                                revision = revisions[current];
+                                placeRevision(revision);
+                                updateNav();
+                            }
 
-   // PREVIOUS.
-   $( '#revision-browser-prev' ).on( 'click', function(e) {
-      e.preventDefault();
+                        });
 
-      if ( ( count -1 ) != current ) {
-         current = current + 1;
-      }
+                        $next.on('click', function (e) {
+                            e.preventDefault();
+                            if (current + 1 in revisions) {
+                                current = current + 1;
+                                revision = revisions[current];
+                                placeRevision(revision);
+                                updateNav();
+                            }
 
-      if ( ( count -1 ) == current ) {
-         $( '#revision-browser-prev' ).html( REVBROWSER.strings.oldest );
-      }
 
-      if ( -1 != current ) {
-         $( '#revision-browser-next' ).html( REVBROWSER.strings.next + ' →' );
-      }
+                        });
 
-      if ( current < count ) {
-         revision = revisions[ current ];
-         placeRevision( revision );
-      }
+                        function hasPrevious() {
+                            if (current - 1 in revisions) {
+                                return true;
+                            }
+                        }
 
-   });
+                        function hasNext() {
+                            if (current + 1 in revisions) {
+                                return true;
+                            }
+                        }
 
-   // Place the Revision titlte and content.
-   function placeRevision( revision ) {
-    
-      $title.html( revision.title.rendered );
-      $content.html( revision.content.rendered );
+                        function updateNav() {
+                            if (hasNext()) {
+                                $next.show().css('visibility', 'visible').attr('aria-hidden', false);
+                            } else {
+                                $next.hide().css('visibility', 'hidden').attr('aria-hidden', true);
+                            }
 
-      // Set the total revisions.
-      $('#revision-browser-heading > span').html( ( count - current ) + "/" + count );
-   }
+                            if (hasPrevious()) {
+                                $previous.show().css('visibility', 'visible').attr('aria-hidden', false);
+                            } else {
+                                $previous.hide().css('visibility', 'hidden').attr('aria-hidden', true);
+                            }
+                        }
+
+
+                        function placeRevision(revision) {
+
+                            $title.html(revision.title.rendered);
+                            $content.html(revision.content.rendered);
+
+                        }
+
+                    } else {
+                        $menu.first('a').html( REVBROWSER.none);
+                        $menu.find('.ab-sub-wrapper').remove();
+                    }
+
+                });
+
+            }
+
+            loaded = true;
+        }
+
+
+    });
+
 });
