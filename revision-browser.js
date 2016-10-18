@@ -18,23 +18,19 @@ jQuery( document ).ready( function($) {
 
    $.get( REVBROWSER.api ).success( function( r ) {
       revisions = r;
-      console.log ( "RESPONSE: " + r );
-
       count = r.length;
-      console.log ( "COUNT: " + count );
-
+      
       // Set the total revisions.
       $('#revision-browser-heading > span').html( count );
    }).error( function( r ) {
       $nav.hide().css( 'visibility', 'hidden' ).attr( 'aria-hidden', true );
-      console.log( r.responseText );
+      
    });
 
    // NEXT.
    $( '#revision-browser-next' ).on( 'click', function(e) {
       e.preventDefault();
-      console.log ( "CURRENT WAS: " + current );
-
+     
       if ( 0 != current ) {
          current = current - 1;
       }
@@ -47,8 +43,6 @@ jQuery( document ).ready( function($) {
          $( '#revision-browser-prev' ).html( '← PREVIOUS' );
       }
 
-      console.log ( "CURRENT IS: " + current );
-
       if ( current > -1 ) {
          revision = revisions[ current ];
          placeRevision( revision );
@@ -58,7 +52,6 @@ jQuery( document ).ready( function($) {
    // PREVIOUS.
    $( '#revision-browser-prev' ).on( 'click', function(e) {
       e.preventDefault();
-      console.log ( "CURRENT WAS: " + current );
 
       if ( ( count -1 ) != current ) {
          current = current + 1;
@@ -72,7 +65,6 @@ jQuery( document ).ready( function($) {
          $( '#revision-browser-next' ).html( 'NEXT →' );
       }
 
-      console.log ( "CURRENT IS: " + current );
       if ( current < count ) {
          revision = revisions[ current ];
          placeRevision( revision );
@@ -82,7 +74,7 @@ jQuery( document ).ready( function($) {
 
    // Place the Revision titlte and content.
    function placeRevision( revision ) {
-    console.log( revision )
+    
       $title.html( revision.title.rendered );
       $content.html( revision.content.rendered );
 
