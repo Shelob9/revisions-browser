@@ -97,4 +97,11 @@ function admin_bar_revisions_browser_toolbar(  $wp_admin_bar ) {
 		'meta' => $meta,
 	) );
 
+	$wp_admin_bar->add_node( array(
+		'parent' => $parent,
+		'id' => $parent . '-current',
+		'title' => __( 'Current' ),
+		'href' => '#current-revision',
+		'meta' => $meta,
+	) );
 }
