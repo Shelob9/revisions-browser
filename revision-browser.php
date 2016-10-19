@@ -15,17 +15,16 @@
 add_action( 'wp_enqueue_scripts', 'revisions_browser' );
 
 /**
- * Main function for revision browser.
+ * Main function for loading the front-end revision browser.
  *
- * @since  0.1.0
+ * @uses "wp_enqueue_scripts" action
+ * @since  4.7.0
  */
 function revisions_browser() {
-	// Don't show to non editors.
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
 	}
 
-	// Let's just do single post view because POC.
 	if ( ! is_single() ) {
 		return;
 	}
@@ -57,8 +56,8 @@ function revisions_browser() {
 /**
  * Add revision browser to toolbar
  *
- * @since 0.1.0
- *
+ * @uses "admin_bar_menu" action
+ * @since 4.7.0
  * @param WP_Admin_Bar $wp_admin_bar
  */
 function revisions_browser_toolbar(  $wp_admin_bar ) {
