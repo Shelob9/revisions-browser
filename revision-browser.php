@@ -31,8 +31,10 @@ function revisions_browser() {
 
 	add_action( 'admin_bar_menu', 'revisions_browser_toolbar', 999 );
 
-	wp_enqueue_script( 'revision-browser', plugin_dir_url(__FILE__) . '/revision-browser.js', array( 'jquery', 'wp-api' ) );
+	wp_enqueue_script( 'revision-browser', plugin_dir_url(__FILE__) . 'revision-browser.js', array( 'jquery', 'wp-api' ) );
 
+	wp_enqueue_style( 'revision-browser', plugin_dir_url(__FILE__) . 'revision-browser.css', null, '0.1.1' );
+	
 	$selectors = wp_parse_args( get_theme_support( 'revision-browser-selectors' ), array(
 		'content' => 'entry-content',
 		'title'   => 'entry-title',
