@@ -1,5 +1,5 @@
 # revisions-browser
-Front-end revision browser via REST API proof of concept.
+Front-end revision browser via REST API. Proposed for inclusion in core: https://core.trac.wordpress.org/ticket/38368
 
 Requires: [REST API Version 2.0 develop branch](https://github.com/WP-API/WP-API/tree/develop)
 
