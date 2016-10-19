@@ -7,10 +7,13 @@
  * @package RBR
  */
 jQuery(document).ready(function ($) {
+    var $revisions = $('#wp-admin-bar-revisions-browser > a');
     var $previous = $('#wp-admin-bar-revisions-browser-previous a');
     var $next = $('#wp-admin-bar-revisions-browser-next a');
+    var $current = $('#wp-admin-bar-revisions-browser-current a');
     $previous.hide().css('visibility', 'hidden').attr('aria-hidden', true);
     $next.hide().css('visibility', 'hidden').attr('aria-hidden', true);
+    $current.hide().css('visibility', 'hidden').attr('aria-hidden', true);
 
     wp.api.loadPromise.done(function () {
         var loaded = false;
@@ -68,9 +71,16 @@ jQuery(document).ready(function ($) {
                                 updateNav();
                             }
 
-
                         });
 
+                        $current.on('click', function (e) {
+                            e.preventDefault();
+                            current = count;
+                            revision = revisions[current];
+                            placeRevision(revision);
+                            updateNav();
+                        });
+                        
                         function hasPrevious() {
                             if (current - 1 in revisions) {
                                 return true;
@@ -95,6 +105,18 @@ jQuery(document).ready(function ($) {
                             } else {
                                 $previous.hide().css('visibility', 'hidden').attr('aria-hidden', true);
                             }
+                            
+                            if (hasNext()) {
+                                $current.show().css('visibility', 'visible').attr('aria-hidden', false);
+                            } else {
+                                $current.hide().css('visibility', 'hidden').attr('aria-hidden', true);
+                            }
+                            
+                            //update links with useful tooltip titles
+                            $revisions.attr('title', 'Viewing revision ' + current + ' of ' + count);
+                            $next.attr('title', 'Load next revision ' + (current + 1) + ' of ' + count);
+                            $previous.attr('title', 'Load previous revision ' + (current - 1) + ' of ' + count);
+                            $current.attr('title', 'Load saved revision ' + count + ' of ' + count);
                         }
 
 
