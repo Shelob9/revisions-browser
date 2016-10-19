@@ -12,7 +12,7 @@
  */
 
 // Enqueue the script.
-add_action( 'wp_enqueue_scripts', 'revisions_browser' );
+add_action( 'wp_enqueue_scripts', 'admin_bar_revisions_browser' );
 
 /**
  * Main function for loading the front-end revision browser.
@@ -20,7 +20,7 @@ add_action( 'wp_enqueue_scripts', 'revisions_browser' );
  * @uses "wp_enqueue_scripts" action
  * @since  4.7.0
  */
-function revisions_browser() {
+function admin_bar_revisions_browser() {
 	if ( ! current_user_can( 'edit_posts' ) ) {
 		return;
 	}
@@ -29,12 +29,14 @@ function revisions_browser() {
 		return;
 	}
 
-	add_action( 'admin_bar_menu', 'revisions_browser_toolbar', 999 );
+	add_action( 'admin_bar_menu', 'admin_bar_revisions_browser_toolbar', 999 );
 
+	//wp_enqueue_script( 'revision-browser', '/wp-includes/js/revision-browser.js', array( 'jquery', 'wp-api' ) );
 	wp_enqueue_script( 'revision-browser', plugin_dir_url(__FILE__) . 'revision-browser.js', array( 'jquery', 'wp-api' ) );
 
-	wp_enqueue_style( 'revision-browser', plugin_dir_url(__FILE__) . 'revision-browser.css', null, '0.1.1' );
-	
+	//wp_enqueue_style( 'revision-browser', plugin_dir_url(__FILE__) . 'revision-browser.css' );
+	wp_enqueue_style( 'revision-browser', '/wp-includes/css/revision-browser.css' );
+
 	$selectors = wp_parse_args( get_theme_support( 'revision-browser-selectors' ), array(
 		'content' => 'entry-content',
 		'title'   => 'entry-title',
@@ -62,7 +64,7 @@ function revisions_browser() {
  * @since 4.7.0
  * @param WP_Admin_Bar $wp_admin_bar
  */
-function revisions_browser_toolbar(  $wp_admin_bar ) {
+function admin_bar_revisions_browser_toolbar(  $wp_admin_bar ) {
 	$parent = 'revisions-browser';
 	$meta = array( 'class' => 'revisions-browser' );
 	$args = array(
