@@ -34,7 +34,15 @@ jQuery(document).ready(function ($) {
                         var count = d1[0].length;
                         var current = count;
 
-                        revisions[current] = d2[0];
+                        if( 
+                            d2[0].content.rendered != revisions[count - 1].content.rendered ||
+                            d2[0].title.rendered != revisions[count - 1].title.rendered
+                        ) {
+                            revisions[current] = d2[0];
+                        } else {
+                            current--;
+                        }
+                        
                         var $content = $('.' + REVBROWSER.content);
                         var $title = $('.' + REVBROWSER.title);
 
