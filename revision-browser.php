@@ -28,6 +28,11 @@ function admin_bar_revisions_browser() {
 	if ( ! is_single() ) {
 		return;
 	}
+	
+	// Only add if current post has revisions
+	if ( count( wp_get_post_revisions( $post->ID ) ) <= 1 ) {
+		return;
+	}
 
 	add_action( 'admin_bar_menu', 'admin_bar_revisions_browser_toolbar', 999 );
 
@@ -92,4 +97,11 @@ function admin_bar_revisions_browser_toolbar(  $wp_admin_bar ) {
 		'meta' => $meta,
 	) );
 
+	$wp_admin_bar->add_node( array(
+		'parent' => $parent,
+		'id' => $parent . '-current',
+		'title' => __( 'Current' ),
+		'href' => '#current-revision',
+		'meta' => $meta,
+	) );
 }
